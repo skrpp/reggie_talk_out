@@ -17,8 +17,8 @@ public class SMSUtils {
         /** use STS Token
          DefaultProfile profile = DefaultProfile.getProfile(
          "<your-region-id>",           // The region ID
-         "<your-access-key-id>",       // The AccessKey ID of the RAM account LTAI5tEedRFBpA26G3fNuFks
-         "<your-access-key-secret>",   // The AccessKey Secret of the RAM account iGvNTQRv0ADvtleHJLZR35Q9wl6HVW
+         "<your-access-key-id>",       // The AccessKey ID of the RAM account
+         "<your-access-key-secret>",   // The AccessKey Secret of the RAM account
          "<your-sts-token>");          // STS Token
          **/
 
