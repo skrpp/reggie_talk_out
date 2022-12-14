@@ -1,6 +1,7 @@
 package com.jt.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jt.reggie.common.R;
 import com.jt.reggie.dto.DishDto;
@@ -178,16 +179,20 @@ public class DishController {
      * @return
      */
     @PostMapping("/status/{status}")
-    public R<String> updateStatus(@PathVariable int status,Long[] ids){
-        log.info("ids:{}",ids);
-        for (int i = 0; i < ids.length; i++) {
-            // 获取菜品
-            Dish dish = dishService.getById(ids[i]);
-            dish.setStatus(status);
-            // 修改状态
-            dishService.updateById(dish);
-        }
-        return R.success("菜品数据修改成功");
+    public R<String> status(@PathVariable Integer status, @RequestParam List<Long> ids) {
+        log.info("status:{},ids:{}", status, ids);
+        LambdaUpdateWrapper<Dish> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.in(ids != null, Dish::getId, ids);
+        updateWrapper.set(Dish::getStatus, status);
+        LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.in(Dish::getId, ids);
+        List<Dish> dishes = dishService.list(lambdaQueryWrapper);
+        for (Dish dish : dishes) {
+            String key = "dish_" + dish.getCategoryId() + "_1";
+            redisTemplate.delete(key);
+            }
+        dishService.update(updateWrapper);
+        return R.success("批量操作成功");
     }
 
     /**
